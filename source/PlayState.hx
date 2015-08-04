@@ -36,6 +36,13 @@ class PlayState extends FlxState
 	
 	private var BounceWalls:FlxGroup;
 	
+	//DEBUG BITS
+	private var _DEBUG_bally:FlxText;
+	private var _DEBUG_ballx:FlxText;
+	
+	private var stringy_bally:String;
+	private var stringy_ballx:String;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -43,6 +50,9 @@ class PlayState extends FlxState
 	{
 		FlxG.mouse.visible = false;
 		
+		
+		_DEBUG_bally = new FlxText(0, 0, 100, Std.string(_ball.velocity.y));
+		_DEBUG_ballx = new FlxText(0, 100, 100, Std.string(_ball.velocity.x));
 		_player = new PlayerPaddle(30, 20);
 		_enemy = new EnemyPaddle(610, 20);
 		_ball = new Ball(240, 160);
@@ -53,6 +63,8 @@ class PlayState extends FlxState
 		_topwall = new Wall(640, 5, false);
 		_bottomwall = new Wall(640, 485, false);
 		
+		add(_DEBUG_bally);
+		add(_DEBUG_ballx);
 		add(_player);
 		add(_enemy);
 		add(_ball);
@@ -64,26 +76,6 @@ class PlayState extends FlxState
 		BounceWalls.add(_topwall);
 		BounceWalls.add(_bottomwall);
 		super.create();
-	}
-	
-	private function playerTouchBall(P:PlayerPaddle, B:Ball):Void
-	{
-		_ball.paddle_collision(1);
-	}
-	
-	private function wallTouchBall(B:Ball, W:Wall):Void
-	{
-		_ball.paddle_collision(2);
-	}
-	
-	private function bounceTouchBall(B:Ball, F:FlxGroup):Void
-	{
-		_ball.paddle_collision(3);
-	}
-	
-	private function enemyTouchBall(E:EnemyPaddle, B:Ball):Void
-	{
-		_ball.paddle_collision(4);
 	}
 	
 	/**
@@ -108,10 +100,18 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+	stringy_bally = Std.string(_ball.velocity.y);
+	stringy_ballx = Std.string(_ball.velocity.x);
+	
+		//_DEBUG_bally.text
+		//Update ball velocity displayed
+		_DEBUG_bally.text(stringy_bally);
+		_DEBUG_ballx.text(stringy_ballx);
+		
 		updateBallPosition(_enemy);
 		FlxG.collide(_ball, BounceWalls);
-		FlxG.collide(_player, _ball, ping);
-		FlxG.collide(_enemy, _ball, ping);
+		FlxG.collide(_player, _ball);
+		FlxG.collide(_enemy, _ball);
 		super.update();
 	}	
 	
@@ -153,24 +153,24 @@ class PlayState extends FlxState
 		
 		if (ballmid < batmid)
 		{
-			// Ball is on the top of the bat
+			// Ball is on the top of the paddle
 			diff = batmid - ballmid;
 			aBall.velocity.y = ( -10 * diff);
 			aBall.velocity.x = ( -10 * diff);
 		}
 		else if (ballmid > batmid)
 		{
-			// Ball on the bottom of the bat
+			// Ball on the bottom of the paddle
 			diff = ballmid - batmid;
 			aBall.velocity.y = (10 * diff);
 			aBall.velocity.x = ( -10 * diff);
 		}
 		else
 		{
-			// Ball is perfectly in the middle
-			// A little random X to stop it bouncing up!
+			// Ball is perfectly mid-paddle
 			aBall.velocity.y = 2 + FlxRandom.intRanged(0, 8);
 		}
 	}
+
 	
 }

@@ -57,7 +57,7 @@ class Ball extends FlxSprite
 	
 	}
 	
-	private function movement():Void
+/*	private function movement():Void
 	{	
 		
 		if (_collided)
@@ -69,11 +69,11 @@ class Ball extends FlxSprite
 		
 		FlxAngle.rotatePoint(speed, 0, 0, 0, currentangle, velocity);
 		
-	}
+	}*/
 	
 	override public function update():Void
 	{
-		movement();
+		//movement();
 		super.update();
 	}
 }
